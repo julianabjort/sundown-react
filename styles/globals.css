@@ -1,26 +1,34 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer base {
+  @font-face {
+    font-family: "Apercu";
+    src: url("/fonts/apercu-light.woff2") format("woff2");
   }
-  body {
-    color: white;
-    background: black;
+
+  .heading-1 {
+    @apply text-2xl;
+  }
+
+  .btn-primary {
+    @apply py-2 bg-primary text-white rounded-xl;
+  }
+
+  .btn-secondary {
+    @apply py-2 bg-secondary text-white rounded-xl;
+  }
+
+  .btn-gray {
+    @apply py-2 bg-gray-300 text-white rounded-xl;
+  }
+
+  .error {
+    @apply text-red-500 text-xs;
+  }
+
+  .input {
+    @apply w-full border-2 rounded-xl my-2 p-1;
   }
 }
