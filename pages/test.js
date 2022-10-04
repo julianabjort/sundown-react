@@ -1,19 +1,11 @@
 import { useContext } from "react";
-import ClickContext from "../contexts/click";
+import OrderContext from "../contexts/order";
 import Link from "next/link";
 
 const test = () => {
-  const [clickAmount, increment] = useContext(ClickContext);
+  const [order, setOrder] = useContext(OrderContext);
 
-  return (
-    <>
-      You clicked the button <strong>{clickAmount}</strong> times.
-      <button onClick={increment}>Click me!</button>
-      <Link href="/receipt">
-        <button className="btn-primary w-1/4">Order</button>
-      </Link>
-    </>
-  );
+  return <></>;
 };
 
 export default test;
