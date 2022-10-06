@@ -2,11 +2,19 @@ import React from "react";
 import Link from "next/link";
 import { useContext, useEffect } from "react";
 import OrderContext from "../contexts/order.js";
+import { useRouter } from "next/router";
 
 function receipt() {
+  const router = useRouter();
   const [order, setOrder] = useContext(OrderContext);
   const dishes = order.dishes;
   const drinks = order.drinks;
+
+  useEffect(() => {
+    if (!order.isUpdating && (!order.dishes.length || !order.email)) {
+      router.push("/dish");
+    }
+  });
 
   const formatDate = (date) => {
     return new Date(date).toLocaleString("en-US", {

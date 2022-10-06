@@ -3,6 +3,7 @@ import "../styles/globals.css";
 import "../styles/datepicker/Calendar.css";
 import "../styles/datepicker/Clock.css";
 import "../styles/datepicker/DateTimePicker.css";
+import "../styles/slider.css";
 import { OrderProvider } from "../contexts/order";
 
 function MyApp({ Component, pageProps }) {

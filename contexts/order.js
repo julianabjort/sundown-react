@@ -9,6 +9,7 @@ export const OrderProvider = ({ children }) => {
     date: null,
     people: 1,
     email: null,
+    isUpdating: false,
   });
   // const [clickAmount, setClickAmount] = useState(0);
   // const increment = () => setClickAmount((amount) => amount + 1);

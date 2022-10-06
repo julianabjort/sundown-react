@@ -5,10 +5,44 @@ import Link from "next/link";
 import DrinksGrid from "../components/DrinksGrid.js";
 import DrinksImage from "../components/DrinksImage.js";
 import { CheckmarkCircle } from "react-ionicons";
+import { useRouter } from "next/router";
 
-function drinks({ drinks }) {
+function drinks() {
+  const router = useRouter();
   const [order, setOrder] = useContext(OrderContext);
+  const [drinks, setDrinks] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedDrinks, setSelectedDrinks] = useState([]);
+
+  const fetchData = async () => {
+    const response = await fetch("https://api.punkapi.com/v2/beers");
+    const data = await response.json();
+    const drinks = data.map((drink) => {
+      const selected = order.drinks.find(
+        (selectedDrink) => selectedDrink.name === drink.name
+      );
+      return {
+        name: drink.name,
+        image: drink.image_url,
+        selected: selected,
+      };
+    });
+    setDrinks(drinks);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (order.drinks.length) {
+      setSelectedDrinks(order.drinks);
+    }
+    if (!order.isUpdating && !order.dishes.length) {
+      router.push("/dish");
+    }
+  }, []);
 
   const selectDrink = (drink) => {
     if (!drink.selected) {
@@ -27,13 +61,6 @@ function drinks({ drinks }) {
     const newObj = { ...order, drinks: selectedDrinks };
     setOrder(newObj);
   };
-
-  useEffect(() => {
-    console.log("selected drinks updated", selectedDrinks);
-  }, [selectedDrinks]);
-  // useEffect(() => {
-  //   console.log("order updated", order);
-  // }, [order]);
 
   return (
     <div className="flex">
@@ -72,22 +99,22 @@ function drinks({ drinks }) {
     </div>
   );
 }
-export async function getStaticProps() {
-  const res = await fetch("https://api.punkapi.com/v2/beers");
-  const data = await res.json();
-  const drinks = data.map((drink) => {
-    return {
-      name: drink.name,
-      image: drink.image_url,
-      selected: false,
-    };
-  });
+// export async function getStaticProps() {
+//   const res = await fetch("https://api.punkapi.com/v2/beers");
+//   const data = await res.json();
+//   const drinks = data.map((drink) => {
+//     return {
+//       name: drink.name,
+//       image: drink.image_url,
+//       selected: false,
+//     };
+//   });
 
-  return {
-    props: {
-      drinks,
-    },
-  };
-}
+//   return {
+//     props: {
+//       drinks,
+//     },
+//   };
+// }
 
 export default drinks;

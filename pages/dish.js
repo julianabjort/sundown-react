@@ -1,42 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DishCard from "../components/DishCard";
-import Link from "next/link";
-import { useContext } from "react";
+import { useRouter } from "next/router";
 import OrderContext from "../contexts/order.js";
 
 function dish() {
+  const router = useRouter();
   const [selectedDishes, setSelectedDishes] = useState([]);
-  const addDish = () => {
-    setSelectedDishes([...selectedDishes, dish]);
-  };
-
   const [dish, setDish] = useState(null);
   const [ingredients, setIngredients] = useState(null);
   const [isLoading, setLoading] = useState(true);
   const [order, setOrder] = useContext(OrderContext);
+  const [error, setError] = useState("");
 
-  const addOrder = () => {
-    const newObj = {
-      ...order,
-      dishes: selectedDishes,
-    };
-    setOrder(newObj);
+  useEffect(() => {
+    if (order.isUpdating) setSelectedDishes(order.dishes);
+  }, []);
+
+  const addDish = () => {
+    setSelectedDishes([...selectedDishes, dish]);
   };
 
-  // const addToOrder = () => {
-  //   const newState = order.map((order) => {
-  //     return { ...order, dishes: selectedDishes };
-  //   });
-  //   setOrder(newState);
-  // };
+  const removeDish = (index) => {
+    const dishRemoved = selectedDishes.filter(
+      (_, dishIndex) => dishIndex !== index
+    );
+    setSelectedDishes(dishRemoved);
+  };
 
-  useEffect(() => {
-    console.log("order updated", order);
-  }, [order]);
-
-  useEffect(() => {
-    console.log("dishes updated", selectedDishes);
-  }, [selectedDishes]);
+  const addOrder = () => {
+    setError("");
+    if (!selectedDishes.length) {
+      setError("Please select at least one dish");
+    } else {
+      const newObj = {
+        ...order,
+        dishes: selectedDishes,
+      };
+      setOrder(newObj);
+      router.push("/drinks");
+    }
+  };
 
   const fetchData = async () => {
     const response = await fetch(
@@ -101,16 +104,24 @@ function dish() {
           <ul>
             {selectedDishes.map((dish, index) => (
               <li className="my-1" key={`${dish.id} + ${index}`}>
-                1 x {dish.name}
+                <div className="flex justify-between">
+                  <p> 1 x {dish.name} </p>
+                  <button
+                    onClick={() => removeDish(index)}
+                    className="cursor-pointer"
+                  >
+                    x
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
         </div>
-        <Link href="/drinks">
-          <button onClick={addOrder} className="btn-primary w-full">
-            Continue to drinks
-          </button>
-        </Link>
+
+        <button onClick={addOrder} className="btn-primary w-full">
+          Continue to drinks
+        </button>
+        <p className="error mt-4">{error}</p>
       </div>
     </div>
   );
